@@ -32,7 +32,7 @@ Steps to proceed:
 library(mdsr)   
 
 knitr::opts_chunk$set(
-  tidy=FALSE,  eval=FALSE,    # display code as typed
+  tidy=FALSE,     # display code as typed
   size="small",   # slightly smaller font for code
   message=FALSE)   
 ```
