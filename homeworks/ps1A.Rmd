@@ -1,8 +1,11 @@
 ---
 title: 'STAT 231: Problem Set 1A'
-author: "YOUR NAME HERE"
+author: "Vaibhav Shah"
 date: "due by 5 PM on Monday, February 22"
-output: pdf_document
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
 ---
 
 In order to most effectively digest the textbook chapter readings -- and the  new R commands each presents -- series A homework assignments are designed to encourage you to read the textbook chapters actively and in line with the textbook's Pro Tip on page 33:
@@ -29,7 +32,10 @@ Steps to proceed:
 
 ```{r, setup, include=FALSE}
 # Load packages here 
-library(mdsr)   
+library(mdsr)
+library(mosaic)
+library(kableExtra)
+library(tidyr)
 
 knitr::opts_chunk$set(
   tidy=FALSE,     # display code as typed
@@ -47,7 +53,7 @@ Figure 3.3 in Section 3.1.1 shows a scatterplot that uses both location and labe
 data(CIACountries)
 
 # define the plot object
-g <- 
+g <- ggplot(data = CIACountries, aes(y = gdp, x = educ)) + geom_text(aes(label = country, color = net_users), size = 3)
   
 # print the plot 
 g
@@ -57,7 +63,10 @@ g
 Now, update the plot with more informative labels.  Label the x-axis "% of GDP spent on education" and the y-axis "Gross Domestic Product (GDP)".  Hint: see Section 3.2.2 for an example of one way to label the axes.
 
 ```{r}
+g <- g + xlab("% of GDP spent on education") +
+ylab("Gross Domestic Product (GDP)")
 
+g
 
 ```
 
@@ -65,14 +74,18 @@ Now, update the plot with more informative labels.  Label the x-axis "% of GDP s
 Next, move the legend so that it's located on the top of the plot as opposed to the right of the plot.  Hint: see Section 3.1.4 for an example on how to change the legend position.
 
 ```{r}
+g <- g + theme(legend.position = "top")
 
+g
 ```
 
 ### d.
 Lastly, Section 3.1.2 discusses *scale*, and demonstrates how to display GDP on a logarithmic scale to better discern differences in GDP.  Update the figure so GDP is on a log10 scale.  
 
 ```{r}
+g <- g + coord_trans(y = "log10")
 
+g
 ```
 
 
@@ -82,7 +95,7 @@ Lastly, Section 3.1.2 discusses *scale*, and demonstrates how to display GDP on 
 ### a.
 Consider Figure 3.7 in Section 3.2.1.  What does `reorder(drg, mean_charge)` do?  Recreate the plot, but use `x = drg` instead of `x = reorder(drg, mean_charge)`.  What happens?
 
-> ANSWER: 
+> ANSWER: The x axis, medical procedure, is no longer sorted by average cost.
 
 ```{r}
 data(MedicareCharges)
@@ -91,7 +104,11 @@ ChargesNJ <- MedicareCharges %>%
   filter(stateProvider == "NJ")
 
 # create the plot object
-p <- 
+p <- ggplot(data = ChargesNJ,
+aes(x = drg, y = mean_charge)) +
+geom_bar(fill = "gray", stat = "identity") +
+ylab("Statewide Average Charges ($)") + xlab("Medical Procedure (DRG)") +
+theme(axis.text.x = element_text(angle = 90, hjust = 1))
   
   
 # print the plot
@@ -101,10 +118,15 @@ p
 ### b.
 Replace `x = drg` with `x = reorder(drg, mean_charge)`, but also remove the `theme()` line.  Now what happens?  What was the purpose of the `theme()` line?  Hint: You may need to knit the document and look at the pdf to better observe what's happening.
 
-> ANSWER:  
+> ANSWER: It adjusted the labels for individual procedures - I'm guessing that's what the numbers represent - to be legible by rotating them 90 degrees to make even, appropriate space for each one along the x-axis.
 
 ```{r}
+p <- ggplot(data = ChargesNJ,
+aes(x = reorder(drg, mean_charge), y = mean_charge)) +
+geom_bar(fill = "gray", stat = "identity") +
+ylab("Statewide Average Charges ($)") + xlab("Medical Procedure (DRG)")
 
+p
 ```
 
 
@@ -113,7 +135,7 @@ Replace `x = drg` with `x = reorder(drg, mean_charge)`, but also remove the `the
 
 As you read through (and, better yet -- code along with (not required, but useful practice!)) -- the extended example on historical baby names in section 3.3.1, write down two questions you have about any of the R code used in that example.  (Your questions could be about what a specific part of the code -- ggplot or not -- is actually doing, or a more general question about any of the commands used.)  Please be thoughtful about your questions; we will use them (anonymously) in an exercise in class this week.
 
-> ANSWER: 
+> ANSWER: What does 'stat = "indentity"' do in the geom_bar function? Why do all those warning about removing rows pop up when you use individual functions, and what exactly are they doing when removing data? Is make_babynames_dist() seriously a built-in function, or is it defined somewhere else? Will we learn to make our own functions in R (How?)?
 
 ```{r}
 # to get you started following along . . .
